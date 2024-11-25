@@ -1,0 +1,33 @@
+<RCC>
+    <qresource prefix="/Hi">
+        <file>files/front/1.jpg</file>
+        <file>files/front/2.jpg</file>
+        <file>files/front/3.jpg</file>
+        <file>files/front/4.jpg</file>
+        <file>files/front/5.jpg</file>
+        <file>files/front/6.jpg</file>
+        <file>files/front/7.jpg</file>
+        <file>files/front/8.jpeg</file>
+        <file>files/front/9.jpeg</file>
+        <file>files/front/8.jpg</file>
+        <file>files/front/9.jpg</file>
+        <file>files/front/10.jpg</file>
+        <file>files/front/11.jpg</file>
+        <file>files/front/12.jpg</file>
+        <file>files/front/13.jpeg</file>
+        <file>files/front/14.jpeg</file>
+        <file>files/front/15.jpg</file>
+        <file>files/front/16.jpg</file>
+        <file>files/front/17.jpg</file>
+        <file>files/logo.png</file>
+    </qresource>
+    <qresource prefix="/Des">
+        <file>files/descriptions/1.txt</file>
+        <file>files/descriptions/2.txt</file>
+        <file>files/descriptions/3.txt</file>
+        <file>files/descriptions/4.txt</file>
+        <file>files/descriptions/5.txt</file>
+        <file>files/descriptions/6.txt</file>
+        <file>files/descriptions/7.txt</file>
+    </qresource>
+</RCC>
