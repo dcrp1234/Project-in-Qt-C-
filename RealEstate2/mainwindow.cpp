@@ -131,6 +131,8 @@ void MainWindow::getNeighbour(QString s){
                     }
                 }
             }
+            gridLayout->update();
+            //inspectGridLayout(gridLayout);
             setUpScrollBar();
             db.close();
         }
@@ -249,4 +251,26 @@ MainWindow::~MainWindow()
 {
 
 }
+void inspectGridLayout(QGridLayout *gridLayout) {
+    int rowCount = gridLayout->rowCount();
+    int colCount = gridLayout->columnCount();
+
+    qDebug() << "Grid Layout Contents:";
+    for (int row = 0; row < rowCount; ++row) {
+        for (int col = 0; col < colCount; ++col) {
+            QLayoutItem *item = gridLayout->itemAtPosition(row, col);
+            if (item) {
+                QWidget *widget = item->widget();
+                if (widget) {
+                    // Here you can check the widget or print some information about it
+                    qDebug() << "Widget at position (" << row << "," << col << "):"
+                             << widget->objectName();  // Print widget name or any other info
+                } else {
+                    qDebug() << "No widget at position (" << row << "," << col << ")";
+                }
+            }
+        }
+    }
+}
+
 
