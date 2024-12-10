@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     QString hsub = "Refine your Lethbridge real estate search by price, bedroom.";
     container = new QWidget();
     sb = new QScrollBar(Qt::Vertical);
+    scrollArea = new QScrollArea;
+    scrollArea->setWidgetResizable(true); // Ensures that the contents can resize
 
     vlayout = new QVBoxLayout();
     nlayout = new QVBoxLayout();
@@ -77,16 +79,67 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::showDialog(){
     // if(!nl) {
     nl = new NeighbourList(this);
-    connect(nl, SIGNAL(sendN(QString)), this, SLOT(displayN(QString)));
+    connect(nl, SIGNAL(sendNeighbour(QString)), this, SLOT(getNeighbour(QString)));
     // }
     nl->show();
     nl->activateWindow();
 }
 
-void MainWindow::displayN(QString s){
-    qDebug() << s;
-}
+void MainWindow::getNeighbour(QString s){
+    if(s!=""){
+        //search and display the new house list in the main window by deleting current widgets and adding new widgets
+        QSqlDatabase db = d.getDatabase();
+        if (!db.open()) {
+            qDebug() << "Error: Failed to open database";
+        }
+        else{
+            qDebug() <<"Database opened, searching for neighbourhood "<< s;
+            QSqlQuery query("SELECT * FROM Home", db); // Replace with your table name
+            int i=0;
+            int p=0, q=0;//for fixing the coordinates for the two grid layouts
+            while (query.next()) {
+                //qDebug() << "Running through all queries";
+                if (query.value("neighbour").toString() == s ){
+                    int id= query.value("id").toInt();
+                    int status= query.value("status").toInt();
+                    QString price = query.value("price").toString();
+                    QString address = query.value("address").toString();
+                    QString bed = query.value("bed").toString();
+                    QString bath = query.value("bath").toString();
+                    QString realtor = query.value("realtor").toString();
+                    QString mls = query.value("mls").toString();
+                    QString img = query.value("img").toString();
 
+                    // Do something with the extracted data, such as printing it
+                    qDebug() << "Title:" << mls << "Neighbourt:" << query.value("neighbour").toString();
+                    if(search->text()==mls || search->text().contains(address, Qt::CaseInsensitive )){
+                        CardWidget *cw = new CardWidget(this, id, price, bed, bath, address, realtor, mls);
+                        c1.push_back(cw);
+                        if(status==1){//on sale
+                            gridLayout->addWidget(c1[i], p / 2, p % 2); // Add to grid layout
+                            p++;
+                        }
+                        else{
+                            soldLayout->addWidget(c1[i], q / 2, q % 2); // Add to sold layout
+                            q++;
+                        }
+                        c1[i]->addImage(img);
+                        c1[i]->addDescription();
+                        connect(c1[i], SIGNAL(sendID(int)), this, SLOT(getID(int)));
+                        i++;
+                        qDebug()<<"Search found";
+                    }
+                }
+            }
+            setUpScrollBar();
+            db.close();
+        }
+    }
+    else{
+        qDebug()<<"Null search";
+    }
+
+}
 void MainWindow::createCard(){
     QSqlDatabase db = d.getDatabase();
     if (!db.open()) {
@@ -125,7 +178,6 @@ void MainWindow::createCard(){
             connect(c1[i], SIGNAL(sendID(int)), this, SLOT(getID(int)));
             i++;
         }
-
         db.close();
     }
 }
@@ -155,11 +207,18 @@ void MainWindow::setWidgetHeight(QWidget *q, int h){
 }
 
 void MainWindow::setUpScrollBar(){
-    scrollArea = new QScrollArea;
-    scrollArea->setWidgetResizable(true); // Ensures that the contents can resize
-    QWidget *scrollWidget = new QWidget;
-    scrollWidget->setLayout(gridLayout); // Assuming gridLayout is the layout that needs to be scrolled
-    scrollArea->setWidget(scrollWidget);
+    qDebug() << "inside setUpScrollBar";
+    QWidget *scrollWidget;
+    if (!scrollArea->widget()) {
+        // Create the scroll widget if it hasn't been created yet
+        scrollWidget = new QWidget;
+        scrollWidget->setLayout(gridLayout);  // Set the grid layout here
+        scrollArea->setWidget(scrollWidget);  // Assign the widget to the scroll area
+    } else {
+        // If the widget already exists, just update the layout inside it
+        scrollWidget = scrollArea->widget();
+        scrollWidget->setLayout(gridLayout);  // Update the layout to gridLayout
+    }
 
     // Connect scrollbar to scroll area
     QObject::connect(sb, &QScrollBar::valueChanged, scrollArea->verticalScrollBar(), &QScrollBar::setValue);
@@ -183,56 +242,7 @@ void MainWindow::getID(int id){
 }
 
 void MainWindow::searchDatabase(){
-    if(search->text()!=""){
-        //search and display the new house list in the main window by deleting current widgets and adding new widgets
-        qDebug()<<"Inside search searching for"<<search->text();
-        QSqlDatabase db = d.getDatabase();
-        if (!db.open()) {
-            qDebug() << "Error: Failed to open database";
-        }
-        else{
-            qDebug() <<"Database opened";
-            QSqlQuery query("SELECT * FROM Home", db); // Replace with your table name
-            int i=0;
-            int p=0, q=0;//for fixing the coordinates for the two grid layouts
-            while (query.next()) {
-                int id= query.value("id").toInt();
-                int status= query.value("status").toInt();
-                QString price = query.value("price").toString();
-                QString address = query.value("address").toString();
-                QString bed = query.value("bed").toString();
-                QString bath = query.value("bath").toString();
-                QString realtor = query.value("realtor").toString();
-                QString mls = query.value("mls").toString();
-                QString img = query.value("img").toString();
 
-                // Do something with the extracted data, such as printing it
-                qDebug() << "Title:" << mls << "Content:" << price;
-                if(search->text()==mls || search->text().contains(address, Qt::CaseInsensitive )){
-                    CardWidget *cw = new CardWidget(this, id, price, bed, bath, address, realtor, mls);
-                    c1.push_back(cw);
-                    if(status==1){//on sale
-                        gridLayout->addWidget(c1[i], p / 2, p % 2); // Add to grid layout
-                        p++;
-                    }
-                    else{
-                        soldLayout->addWidget(c1[i], q / 2, q % 2); // Add to sold layout
-                        q++;
-                    }
-                    c1[i]->addImage(img);
-                    c1[i]->addDescription();
-                    connect(c1[i], SIGNAL(sendID(int)), this, SLOT(getID(int)));
-                    i++;
-                    qDebug()<<"Search found";
-                }
-            }
-
-            db.close();
-        }
-    }
-    else{
-        qDebug()<<"Null search";
-    }
 }
 
 MainWindow::~MainWindow()

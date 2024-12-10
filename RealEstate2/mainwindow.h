@@ -36,7 +36,7 @@ public:
 
 private slots:
     void showDialog();
-    void displayN(QString);
+    void getNeighbour(QString);
     void getID(int);
     void searchDatabase();
 

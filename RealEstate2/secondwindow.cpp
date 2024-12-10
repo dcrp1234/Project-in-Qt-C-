@@ -77,14 +77,10 @@ void SecondWindow::extractData(){
                 img = query.value("img").toString();
                 des = query.value("des").toString();
 
-                // Do something with the extracted data, such as printing it
-                // qDebug() << "Title:" << mls << "Content:" << price;
                 break;
             }
             i++;
         }
-        // Do something with the extracted data, such as printing it
-        //        qDebug() << "Title:" << mls << "Content:" << price;
 
         //allocates the data to the QLabels
         l1->setText(address);
@@ -152,8 +148,6 @@ void SecondWindow::showGraph(){
                 d=d/100000;
                 j=j/100000;
                 f=f/100000;
-                // Do something with the extracted data, such as printing it
-                //qDebug() << "Title:" << d << f << id << "Content:" << j;
 
                 series->append(0, d);
                 series->append(1, j);

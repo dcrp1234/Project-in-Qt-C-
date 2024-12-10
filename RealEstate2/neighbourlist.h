@@ -17,7 +17,7 @@ public:
     NeighbourList(QWidget* parent = 0);
 
 signals:
-    void sendN(QString s);
+    void sendNeighbour(QString s);
 
 private slots:
     void addButtonClicked(QString s);

@@ -25,5 +25,5 @@ NeighbourList::NeighbourList(QWidget* parent): QDialog(parent)
 
 
 void NeighbourList::addButtonClicked(QString s){
-    emit sendN(s);
+    emit sendNeighbour(s);
 }

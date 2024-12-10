@@ -39,7 +39,7 @@ void Data::createDatabase(){
         else{
             //qDebug() << "Table created successfully.";
 
-            // Insert some data
+            // Insert some data, status 1 is avaibale and 2 means sold
             createTuples(query, "INSERT INTO Home (status, price, bed, bath, address, neighbour, realtor, mls, des, img) VALUES (1, 400000, 4, 3, 'XXX Columbia Blvd West', 'Cooperwood', 'Sutton', 'A200000', ':/Des/files/descriptions/1.txt', ':/Hi/files/front/1.jpg' )");
             createTuples(query, "INSERT INTO Home (status, price, bed, bath, address, neighbour, realtor, mls, des, img) VALUES (2, 590000, 3, 3, 'XXX Acquatania Blvd West', 'Lakeview', 'ReMax', 'A200290', ':/Des/files/descriptions/2.txt', ':/Hi/files/front/2.jpg' )");
             createTuples(query, "INSERT INTO Home (status, price, bed, bath, address, neighbour, realtor, mls, des, img) VALUES (1, 350000, 3, 2, '123 Main Street', 'Downtown', 'Century21', 'A123456', ':/Des/files/descriptions/3.txt', ':/Hi/files/front/3.jpg' )");
